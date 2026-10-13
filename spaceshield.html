@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SpaceShield | Orbital Awareness</title>
+<style>
+:root{--bg:#050914;--panel:#0b1425;--panel2:#101d32;--line:#1d3150;--text:#e9f3ff;--muted:#8ea5c4;--cyan:#45d7ff;--blue:#578bff;--amber:#ffbd59;--red:#ff667d;--green:#6de6bb}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 48% 15%,#10264a 0%,var(--bg) 54%);color:var(--text);font:14px/1.45 Inter,Segoe UI,Arial,sans-serif;min-height:100vh}
+header{height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;border-bottom:1px solid #1c2c45;background:#050914d9;position:sticky;top:0;z-index:5;backdrop-filter:blur(12px)}
+.brand{display:flex;align-items:center;gap:12px;font-size:19px;font-weight:800;letter-spacing:1.7px}.logo{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(145deg,#1d8fb5,#394de0);box-shadow:0 0 25px #238aff55;font-size:21px}.brand small{display:block;font-size:10px;letter-spacing:2px;color:var(--muted);font-weight:600;margin-top:1px}
+.header-right{display:flex;gap:10px;align-items:center}.pill{border:1px solid var(--line);background:#0b1728;padding:7px 11px;border-radius:99px;color:var(--muted);font-size:11px}.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:6px;box-shadow:0 0 8px var(--green)}
+main{max-width:1500px;margin:auto;padding:24px 28px 32px}.intro{display:flex;justify-content:space-between;align-items:end;margin-bottom:20px;gap:20px}.eyebrow{color:var(--cyan);text-transform:uppercase;letter-spacing:2px;font-size:10px;font-weight:800}.intro h1{font-size:29px;letter-spacing:-.7px;margin:5px 0}.intro p{margin:0;color:var(--muted)}.clock{text-align:right;color:var(--muted);font-size:11px}.clock strong{display:block;color:var(--text);font-size:16px;font-weight:650}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:16px}.stat,.panel{background:linear-gradient(145deg,#0e1a2d,#091221);border:1px solid var(--line);border-radius:15px;box-shadow:0 10px 35px #00000018}.stat{padding:17px 18px;position:relative;overflow:hidden}.stat:after{content:"";position:absolute;right:-20px;top:-32px;width:90px;height:90px;border-radius:50%;background:#40bfff0c}.stat-top{display:flex;justify-content:space-between;color:var(--muted);font-size:12px}.stat-num{font-size:28px;font-weight:750;letter-spacing:-.5px;margin:8px 0 2px}.stat-note{font-size:10px;color:var(--muted)}.accent{color:var(--cyan)}.warn{color:var(--amber)}.danger{color:var(--red)}.green{color:var(--green)}
+.layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(300px,.85fr);gap:16px}.panel-head{padding:17px 19px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.panel-title{font-weight:750;font-size:13px}.sub{color:var(--muted);font-size:11px;margin-top:3px}.tag{font-size:10px;border-radius:6px;padding:5px 8px;background:#143047;color:var(--cyan);border:1px solid #1b4963;white-space:nowrap}
+.globe-wrap{height:390px;position:relative;overflow:hidden;background:radial-gradient(ellipse at center,#10294a 0%,#071225 48%,#050b17 100%)}#spaceCanvas{width:100%;height:100%;display:block}.globe-overlay{position:absolute;inset:14px 15px auto;display:flex;justify-content:space-between;pointer-events:none}.overlay-chip{background:#06101bdc;border:1px solid #29405a;border-radius:7px;padding:7px 9px;font-size:10px;color:#b4c9e4}.globe-bottom{position:absolute;left:15px;right:15px;bottom:13px;display:flex;justify-content:space-between;align-items:end;pointer-events:none}.legend{display:flex;gap:12px;flex-wrap:wrap;background:#06101bdc;border:1px solid #243851;border-radius:8px;padding:8px 10px;font-size:10px;color:#b5c8df}.legend i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px}.hint{font-size:10px;color:#8ea5c4;background:#06101bdc;padding:7px 9px;border-radius:7px}
+.object-details{padding:15px 18px;display:grid;grid-template-columns:1fr 1fr;gap:12px}.detail{border:1px solid #1b2e49;border-radius:9px;padding:10px 11px;background:#0a1526}.detail label{display:block;font-size:10px;color:var(--muted);margin-bottom:5px}.detail strong{font-size:13px;font-weight:650}
+.right-col{display:flex;flex-direction:column;gap:16px}.object-list{padding:5px 12px 12px}.object-row{width:100%;display:flex;align-items:center;gap:10px;text-align:left;background:transparent;border:1px solid transparent;border-radius:9px;padding:11px 8px;color:var(--text);cursor:pointer}.object-row:hover,.object-row.selected{background:#10233a;border-color:#244968}.obj-icon{width:34px;height:34px;border-radius:9px;background:#142844;display:grid;place-items:center;color:var(--cyan);font-size:17px;flex-shrink:0}.obj-info{min-width:0;flex:1}.obj-info strong{display:block;font-size:12px}.obj-info small{color:var(--muted);font-size:10px}.status{font-size:9px;border-radius:5px;padding:4px 6px;background:#263044;color:#b6c7dc}.status.debris{background:#40252c;color:#ff9aaa}.status.active{background:#14362f;color:#80e8c7}
+.alert-list{padding:5px 14px 14px}.alert{display:flex;gap:10px;padding:12px 5px;border-bottom:1px solid #1a2a42}.alert:last-child{border-bottom:0}.alert-symbol{width:29px;height:29px;display:grid;place-items:center;border-radius:8px;background:#3a2c1c;color:var(--amber);flex-shrink:0}.alert strong{display:block;font-size:11px}.alert p{margin:4px 0;color:var(--muted);font-size:10px}.alert small{font-size:9px;color:#6f86a5}.filters{display:flex;gap:7px}.filters button,.action-btn{border:1px solid var(--line);border-radius:7px;background:#0b1729;color:var(--muted);padding:7px 9px;font-size:10px;cursor:pointer}.filters button.active,.filters button:hover,.action-btn:hover{border-color:#2e8cb2;color:var(--cyan);background:#0d2438}
+.table-panel{margin-top:16px}.table-scroll{overflow:auto}table{border-collapse:collapse;width:100%;min-width:620px}th,td{text-align:left;padding:13px 18px;border-bottom:1px solid #192940;font-size:11px}th{color:#829bb9;font-size:10px;font-weight:650;text-transform:uppercase;letter-spacing:.7px}td{color:#c6d6eb}tbody tr:hover{background:#102038}.object-name{font-weight:650;color:var(--text)}.kind{color:var(--muted);font-size:10px}.distance{color:var(--amber);font-weight:700}.demo-note{margin-top:14px;padding:12px 14px;border:1px solid #5b4827;background:#211b10;border-radius:10px;color:#e9c98b;font-size:11px;display:flex;gap:9px;align-items:flex-start}.demo-note strong{color:#ffe0a2}.footer{display:flex;justify-content:space-between;gap:12px;margin-top:18px;color:#627b9c;font-size:10px}
+.toast{position:fixed;right:20px;bottom:20px;background:#10243a;border:1px solid #2a5873;padding:12px 16px;border-radius:10px;box-shadow:0 8px 30px #0008;display:none;z-index:20}
+@media(max-width:950px){.layout{grid-template-columns:1fr}.right-col{display:grid;grid-template-columns:1fr 1fr}.globe-wrap{height:340px}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){header{padding:0 14px}.header-right .pill:first-child{display:none}main{padding:18px 13px}.intro{align-items:start;flex-direction:column}.clock{text-align:left}.stats{gap:8px}.stat{padding:13px}.stat-num{font-size:23px}.right-col{display:flex}.globe-wrap{height:300px}.brand{font-size:16px}.footer{flex-direction:column}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="logo">⛨</div><div>SPACESHIELD<small>ORBITAL AWARENESS PLATFORM</small></div></div>
+  <div class="header-right"><span class="pill">MISSION CONTROL · DEMO</span><span class="pill"><span class="live-dot"></span>System online</span></div>
+</header>
+<main>
+  <section class="intro">
+    <div><div class="eyebrow">Space situational awareness</div><h1>Orbital Traffic Overview</h1><p>Explore catalogued objects and understand orbital congestion around Earth.</p></div>
+    <div class="clock"><strong id="utcClock">--:--:-- UTC</strong><span id="dateLabel">Loading time…</span></div>
+  </section>
+  <section class="stats">
+    <div class="stat"><div class="stat-top"><span>Objects in demo dataset</span><span class="accent">◉</span></div><div class="stat-num">8,421</div><div class="stat-note">Illustrative catalog size</div></div>
+    <div class="stat"><div class="stat-top"><span>Tracked debris samples</span><span class="warn">✦</span></div><div class="stat-num">5,286</div><div class="stat-note">Illustrative category count</div></div>
+    <div class="stat"><div class="stat-top"><span>Close-approach records</span><span class="danger">⌁</span></div><div class="stat-num">03</div><div class="stat-note">Example events · not live alerts</div></div>
+    <div class="stat"><div class="stat-top"><span>Data mode</span><span class="green">●</span></div><div class="stat-num" style="font-size:22px">Demo</div><div class="stat-note">Sample objects · no live feed connected</div></div>
+  </section>
+
+  <section class="layout">
+    <div class="panel">
+      <div class="panel-head"><div><div class="panel-title">Earth Orbital Visualization</div><div class="sub">Illustrative orbit paths · select an object to inspect</div></div><span class="tag">3D VIEW · SIMULATED</span></div>
+      <div class="globe-wrap"><canvas id="spaceCanvas" aria-label="Illustrative Earth and orbital paths"></canvas>
+        <div class="globe-overlay"><span class="overlay-chip">EARTH · ORBITAL VIEW</span><span class="overlay-chip" id="selectedChip">SELECTED: ISS</span></div>
+        <div class="globe-bottom"><div class="legend"><span><i style="background:#45d7ff"></i>Active satellite</span><span><i style="background:#ffbd59"></i>Rocket body</span><span><i style="background:#ff667d"></i>Debris sample</span></div><span class="hint">Drag to rotate · Click markers</span></div>
+      </div>
+      <div class="object-details">
+        <div class="detail"><label>SELECTED OBJECT</label><strong id="detailName">ISS (demo marker)</strong></div>
+        <div class="detail"><label>OBJECT CATEGORY</label><strong id="detailType">Active satellite</strong></div>
+        <div class="detail"><label>ORBITAL ALTITUDE</label><strong id="detailAltitude">~420 km · illustrative</strong></div>
+        <div class="detail"><label>DATA SOURCE</label><strong id="detailSource">Local demo data</strong></div>
+      </div>
+    </div>
+
+    <div class="right-col">
+      <div class="panel">
+        <div class="panel-head"><div><div class="panel-title">Object Explorer</div><div class="sub">Choose an object to inspect</div></div><span class="tag">8 SAMPLES</span></div>
+        <div class="object-list" id="objectList"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div><div class="panel-title">Close-Approach Watch</div><div class="sub">Example records for interface demonstration</div></div><span class="tag" style="color:var(--amber);background:#302516;border-color:#5b4425">DEMO</span></div>
+        <div class="alert-list">
+          <div class="alert"><div class="alert-symbol">⚠</div><div><strong>Sample event A · Low separation</strong><p>Illustrative distance: 1.8 km</p><small>SIMULATED RECORD · NOT A PREDICTION</small></div></div>
+          <div class="alert"><div class="alert-symbol">⌁</div><div><strong>Sample event B · Monitor</strong><p>Illustrative distance: 4.6 km</p><small>SIMULATED RECORD · NOT A PREDICTION</small></div></div>
+          <div class="alert"><div class="alert-symbol">◷</div><div><strong>Sample event C · Upcoming</strong><p>Time of closest approach not calculated</p><small>DEMO PLACEHOLDER · NO LIVE DATA</small></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel table-panel">
+    <div class="panel-head"><div><div class="panel-title">Tracked Object Catalog</div><div class="sub">Local sample records to demonstrate filtering and selection</div></div><div class="filters"><button class="active" data-filter="All">All</button><button data-filter="Satellite">Satellites</button><button data-filter="Debris">Debris</button></div></div>
+    <div class="table-scroll"><table><thead><tr><th>Object</th><th>Category</th><th>Altitude</th><th>Display status</th><th>Record type</th></tr></thead><tbody id="catalogBody"></tbody></table></div>
+  </section>
+  <div class="demo-note"><span>ⓘ</span><div><strong>Prototype data notice.</strong> This page is a front-end demonstration. Object markers, orbital paths, counts, distances, and close-approach entries are illustrative, not live tracking or validated collision predictions. Connect a verified orbital data source and appropriate propagation/conjunction analysis before making real-world claims.</div></div>
+  <div class="footer"><span>SPACESHIELD · HACKATHON PROTOTYPE</span><span>Orbital visualization is illustrative · No operational warnings generated</span></div>
+</main>
+<div class="toast" id="toast"></div>
+<script>
+const objects=[
+ {id:'ISS-DEMO',name:'ISS (demo marker)',short:'ISS',type:'Satellite',kind:'Active satellite',alt:420,color:'#45d7ff',icon:'⌁',status:'Illustrative'},
+ {id:'SAT-DEMO-02',name:'Earth Observation 02',short:'EO-02',type:'Satellite',kind:'Earth observation satellite',alt:705,color:'#45d7ff',icon:'◈',status:'Illustrative'},
+ {id:'SAT-DEMO-03',name:'Navigation Sample 03',short:'NAV-03',type:'Satellite',kind:'Navigation satellite',alt:20200,color:'#45d7ff',icon:'✦',status:'Illustrative'},
+ {id:'RB-DEMO-01',name:'Rocket Body Sample 01',short:'RB-01',type:'Debris',kind:'Rocket body',alt:810,color:'#ffbd59',icon:'⬡',status:'Illustrative'},
+ {id:'FRAG-DEMO-04',name:'Fragment Sample 04',short:'FRG-04',type:'Debris',kind:'Debris fragment',alt:960,color:'#ff667d',icon:'✧',status:'Illustrative'},
+ {id:'FRAG-DEMO-05',name:'Fragment Sample 05',short:'FRG-05',type:'Debris',kind:'Debris fragment',alt:570,color:'#ff667d',icon:'✧',status:'Illustrative'},
+ {id:'SAT-DEMO-06',name:'Weather Sample 06',short:'WX-06',type:'Satellite',kind:'Weather satellite',alt:830,color:'#45d7ff',icon:'◉',status:'Illustrative'},
+ {id:'RB-DEMO-07',name:'Rocket Body Sample 07',short:'RB-07',type:'Debris',kind:'Rocket body',alt:1450,color:'#ffbd59',icon:'⬡',status:'Illustrative'}
+];
+let selected=objects[0],filter='All',rotation=0,dragging=false,lastX=0;
+const list=document.getElementById('objectList'),tbody=document.getElementById('catalogBody');
+function renderList(){list.innerHTML=objects.filter(o=>filter==='All'||o.type===filter).map(o=>`<button class="object-row ${o.id===selected.id?'selected':''}" data-id="${o.id}"><span class="obj-icon" style="color:${o.color}">${o.icon}</span><span class="obj-info"><strong>${o.name}</strong><small>${o.id} · ${o.alt.toLocaleString()} km*</small></span><span class="status ${o.type==='Debris'?'debris':'active'}">${o.type}</span></button>`).join('');list.querySelectorAll('button').forEach(b=>b.onclick=()=>selectObject(b.dataset.id));}
+function renderTable(){tbody.innerHTML=objects.filter(o=>filter==='All'||o.type===filter).map(o=>`<tr data-id="${o.id}" style="cursor:pointer"><td class="object-name">${o.name}<div class="kind">${o.id}</div></td><td>${o.kind}</td><td>${o.alt.toLocaleString()} km*</td><td><span class="status">${o.status}</span></td><td><span class="kind">Local demo</span></td></tr>`).join('');tbody.querySelectorAll('tr').forEach(r=>r.onclick=()=>selectObject(r.dataset.id));}
+function selectObject(id){selected=objects.find(o=>o.id===id)||objects[0];document.getElementById('selectedChip').textContent='SELECTED: '+selected.short;document.getElementById('detailName').textContent=selected.name;document.getElementById('detailType').textContent=selected.kind;document.getElementById('detailAltitude').textContent='~'+selected.alt.toLocaleString()+' km · illustrative';document.getElementById('detailSource').textContent='Local demo data';renderList();renderTable();drawGlobe();}
+document.querySelectorAll('.filters button').forEach(b=>b.onclick=()=>{filter=b.dataset.filter;document.querySelectorAll('.filters button').forEach(x=>x.classList.toggle('active',x===b));renderList();renderTable();});
+function updateClock(){const d=new Date();document.getElementById('utcClock').textContent=d.toISOString().slice(11,19)+' UTC';document.getElementById('dateLabel').textContent=d.toISOString().slice(0,10)+' · System clock';}updateClock();setInterval(updateClock,1000);
+const canvas=document.getElementById('spaceCanvas'),ctx=canvas.getContext('2d');
+function resizeCanvas(){const r=canvas.getBoundingClientRect(),dpr=window.devicePixelRatio||1;canvas.width=Math.max(1,r.width*dpr);canvas.height=Math.max(1,r.height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);drawGlobe();}
+function drawGlobe(){
+ const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return;ctx.clearRect(0,0,w,h);
+ // stars
+ let seed=991;function rand(){seed=(seed*16807)%2147483647;return(seed-1)/2147483646}
+ for(let i=0;i<150;i++){const x=rand()*w,y=rand()*h;ctx.beginPath();ctx.arc(x,y,rand()*1.25+.2,0,Math.PI*2);ctx.fillStyle=`rgba(165,207,255,${rand()*.55+.12})`;ctx.fill()}
+ const cx=w*.51,cy=h*.51,R=Math.min(w*.255,h*.38);if(R<10)return;
+ const glow=ctx.createRadialGradient(cx,cy,R*.55,cx,cy,R*1.2);glow.addColorStop(0,'#2367a8');glow.addColorStop(.72,'#0b3568');glow.addColorStop(1,'#07172c');
+ ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.fillStyle=glow;ctx.fill();
+ ctx.save();ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.clip();
+ // stylized land masses
+ ctx.fillStyle='#247d83';ctx.globalAlpha=.67;
+ function land(points){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(cx+p[0]*R,cy+p[1]*R):ctx.moveTo(cx+p[0]*R,cy+p[1]*R));ctx.closePath();ctx.fill()}
+ land([[-.78,-.4],[-.52,-.73],[-.22,-.67],[-.1,-.4],[-.3,-.19],[-.37,.12],[-.57,.2],[-.7,-.05]]);
+ land([[-.25,.12],[-.05,.2],[.05,.48],[-.12,.83],[-.29,.55],[-.37,.3]]);
+ land([[.05,-.6],[.42,-.65],[.77,-.35],[.63,-.12],[.43,-.05],[.29,.18],[.13,.03],[-.02,-.19]]);
+ land([[.34,.24],[.6,.16],[.75,.42],[.56,.68],[.36,.48]]);
+ ctx.globalAlpha=1;
+ // latitudes
+ ctx.strokeStyle='#65c5e833';ctx.lineWidth=.7;
+ for(let k=-2;k<=2;k++){let yy=cy+k*R*.29,rx=R*Math.sqrt(Math.max(0,1-(k*.29)**2));ctx.beginPath();ctx.ellipse(cx,yy,rx,Math.max(4,R*.11),0,0,Math.PI*2);ctx.stroke()}
+ ctx.beginPath();ctx.ellipse(cx,cy,R*.38,R,0,0,Math.PI*2);ctx.stroke();
+ ctx.restore();
+ ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.strokeStyle='#56bdfb88';ctx.lineWidth=1.2;ctx.stroke();
+ // orbit ellipses, rotate with user drag
+ const orbits=[{rx:R*1.36,ry:R*.43,a:-.35,c:'#45d7ff'},{rx:R*1.48,ry:R*.62,a:.58,c:'#ffbd59'},{rx:R*1.18,ry:R*.8,a:-.88,c:'#ff667d'},{rx:R*1.7,ry:R*.3,a:.16,c:'#45d7ff'}];
+ orbits.forEach((o,i)=>{ctx.save();ctx.translate(cx,cy);ctx.rotate(o.a+rotation*.008);ctx.beginPath();ctx.ellipse(0,0,o.rx,o.ry,0,0,Math.PI*2);ctx.strokeStyle=o.c+'88';ctx.lineWidth=i===0?1.4:1;ctx.setLineDash(i===2?[4,5]:[]);ctx.stroke();ctx.setLineDash([]);ctx.restore()});
+ // sample markers on orbital paths
+ objects.forEach((o,i)=>{const angle=(i/objects.length)*Math.PI*2+rotation*.008+(i%2)*.5;const orbit=orbits[i%orbits.length];const cos=Math.cos(orbit.a+rotation*.008),sin=Math.sin(orbit.a+rotation*.008);const ex=orbit.rx*Math.cos(angle),ey=orbit.ry*Math.sin(angle);const x=cx+ex*cos-ey*sin,y=cy+ex*sin+ey*cos;ctx.beginPath();ctx.arc(x,y,o.id===selected.id?5:3.2,0,Math.PI*2);ctx.fillStyle=o.color;ctx.shadowBlur=o.id===selected.id?15:7;ctx.shadowColor=o.color;ctx.fill();ctx.shadowBlur=0;if(o.id===selected.id){ctx.beginPath();ctx.arc(x,y,9,0,Math.PI*2);ctx.strokeStyle=o.color+'bb';ctx.stroke()}o._xy={x,y};});
+ // center label
+ ctx.fillStyle='#d7ecff';ctx.font='10px Segoe UI,Arial';ctx.textAlign='center';ctx.fillText('EARTH',cx,cy+R+17);
+}
+canvas.addEventListener('pointerdown',e=>{dragging=true;lastX=e.clientX;canvas.setPointerCapture(e.pointerId)});canvas.addEventListener('pointermove',e=>{if(dragging){rotation+=(e.clientX-lastX)*.8;lastX=e.clientX;drawGlobe()}});canvas.addEventListener('pointerup',e=>{dragging=false;const rect=canvas.getBoundingClientRect(),x=e.clientX-rect.left,y=e.clientY-rect.top;let nearest=null,dist=18;objects.forEach(o=>{if(o._xy){const d=Math.hypot(o._xy.x-x,o._xy.y-y);if(d<dist){dist=d;nearest=o}}});if(nearest)selectObject(nearest.id)});canvas.addEventListener('pointercancel',()=>dragging=false);
+window.addEventListener('resize',resizeCanvas);renderList();renderTable();resizeCanvas();
+</script>
+</body>
+</html>
